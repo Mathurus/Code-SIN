@@ -25,7 +25,7 @@ void handleData() {
     double tempK = 1 / (1 / (273.15 + 25) + log(Rt / 10) / 3950.0); 
     double temp = tempK - 273.15;
     int json = {"Temperature" : temp};
-    String html = "<html><body>" + json + "</body></html>";
+    String json = "{\"Temperature\":" + String(temp, 2) + "}";
     server.send(200, "text/json", html);
 }
 
