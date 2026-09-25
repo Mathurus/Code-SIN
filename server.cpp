@@ -26,7 +26,7 @@ void handleData() {
     double temp = tempK - 273.15;
     int json = {"Temperature" : temp};
     String json = "{\"Temperature\":" + String(temp, 2) + "}";
-    server.send(200, "text/json", html);
+    server.send(200, "application/json", json);
 }
 
 void setup() {
@@ -37,7 +37,7 @@ void setup() {
         delay(500);
     }
     Serial.println("\nConnect to the wifi : " + ssid);
-    Serial.println(WiFi.lacalIP());
+    Serial.println(WiFi.localIP());
     server.on("/", handleRoot);
     server.on("/data", handleData);
     server.begin();
@@ -49,6 +49,6 @@ void loop() {
     double Rt = 10 * voltage / (3.3 - voltage);                     
     double tempK = 1 / (1 / (273.15 + 25) + log(Rt / 10) / 3950.0); 
     double temp = tempK - 273.15;                                  
-    Serial.printf("ADC value : %d,\tVoltage : %.2fV, \tTemperature : %.2fC\n", adcValue, voltage, tempC);
+    Serial.printf("ADC value : %d,\tVoltage : %.2fV, \tTemperature : %.2fC\n", adcValue, voltage, temp);
     server.handleClient();
 }
