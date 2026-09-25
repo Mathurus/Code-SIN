@@ -1,3 +1,7 @@
+// This is a code for station mode
+
+
+
 #include <WiFi.h> 
 #include <WebServer.h>
 
