@@ -1,67 +1,243 @@
-#include <WiFi.h>
+// This is a code for station mode
+
+
+
+#include <WiFi.h> 
 #include <WebServer.h>
 
-// Vos identifiants Wi-Fi
-const char* ssid = "VOTRE_NOM_WIFI";
-const char* password = "VOTRE_MOT_DE_PASSE";
+const char* ssid = "**********"; 
+const char* passwd = "**********";
 
 WebServer server(80);
 
-// --- TOUTE VOTRE PAGE WEB EST STOCKÉE ICI EN MÉMOIRE FLASH ULTRA-RAPIDE ---
-const char INDEX_HTML[] PROGMEM = R"rawliteral(
+void handleRoot() {
+    int adcValue = analogRead(PIN_ANALOG_IN);                       
+    double voltage = (float)adcValue / 4095.0 * 3.3;                
+    double Rt = 10 * voltage / (3.3 - voltage);                     
+    double tempK = 1 / (1 / (273.15 + 25) + log(Rt / 10) / 3950.0); 
+    double temp = tempK - 273.15;
+    String html = R"rawliteral(
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ESP32 Ultra Rapide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ESP Capteur</title>
+
     <style>
-        /* Le CSS est intégré ici : Pas de fichier séparé */
-        body { font-family: Arial, sans-serif; background: #f0f2f5; text-align: center; margin-top: 50px; }
-        .card { background: white; padding: 300px; display: inline-block; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .btn { background: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
-        .btn:hover { background: #0056b3; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a,
+                #2563eb
+            );
+
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+
+            padding: 35px;
+
+            text-align: center;
+
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        .temperature {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .temperature-label {
+            color: #cbd5e1;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .temperature-value {
+            font-size: 55px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .unit {
+            font-size: 25px;
+            color: #93c5fd;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+
+            padding: 8px 15px;
+            border-radius: 50px;
+
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        footer {
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .card {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .temperature-value {
+                font-size: 45px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="card">
-        <h1>Mon ESP32 Local</h1>
-        <p>Cette page se charge instantanément car elle est en mémoire Flash.</p>
-        <button class="btn" onclick="maAction()">Lancer une requête</button>
-    </div>
+    <div class="container">
 
-    <script>
-        // Le JavaScript est intégré ici : Pas de fichier séparé
-        function maAction() {
-            alert("Requête envoyée instantanément !");
-            // C'est ici que vous mettriez un fetch() ou un XMLHttpRequest si besoin
-        }
-    </script>
+        <div class="card">
+
+            <div class="icon">🌡️</div>
+
+            <h1>ESP CAPTEUR</h1>
+
+            <p class="subtitle">
+                Surveillance de la température
+            </p>
+
+            <div class="temperature">
+
+                <div class="temperature-label">
+                    Température actuelle
+                </div>
+
+                <div class="temperature-value">
+                    )rawliteral";
+
+html += String(temp);
+
+html += R"rawliteral(
+                    <span class="unit">°C</span>
+                </div>
+
+            </div>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Capteur connecté
+            </div>
+
+            <footer>
+                ESP • Monitoring en temps réel
+            </footer>
+
+        </div>
+
+    </div>
 
 </body>
 </html>
 )rawliteral";
 
-// --- GESTION DES REQUÊTES EN C++ ---
+    server.send(200, "text/html", html);
+}
 
-void handleRoot() {
-  // server.send_P est spécifique pour envoyer les données depuis la mémoire Flash (PROGMEM) à vitesse maximale
-  server.send_P(200, "text/html", INDEX_HTML);
+void handleData() {
+    int adcValue = analogRead(PIN_ANALOG_IN);                       
+    double voltage = (float)adcValue / 4095.0 * 3.3;                
+    double Rt = 10 * voltage / (3.3 - voltage);                     
+    double tempK = 1 / (1 / (273.15 + 25) + log(Rt / 10) / 3950.0); 
+    double temp = tempK - 273.15;
+    int json = {"Temperature" : temp};
+    String json = "{\"Temperature\":" + String(temp, 2) + "}";
+    server.send(200, "application/json", json);
 }
 
 void setup() {
-  Serial.begin(115200);
-  
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) { delay(500); Serial.print("."); }
-  Serial.println("\nConnecté ! Adresse IP : " + WiFi.localIP().toString());
-
-  // Quand vous tapez l'adresse IP, l'ESP32 exécute la fonction handleRoot
-  server.on("/", handleRoot);
-  
-  server.begin();
+    Serial.begin(115200);
+    WiFi.begin(ssid, passwd);
+    while (WiFi.status() != WL_CONNECTED) {
+        Serial.print(".");
+        delay(500);
+    }
+    Serial.println("\nConnect to the wifi : " + ssid);
+    Serial.println(WiFi.localIP());
+    server.on("/", handleRoot);
+    server.on("/data", handleData);
+    server.begin();
 }
 
 void loop() {
-  server.handleClient();
+    int adcValue = analogRead(PIN_ANALOG_IN);                       
+    double voltage = (float)adcValue / 4095.0 * 3.3;                
+    double Rt = 10 * voltage / (3.3 - voltage);                     
+    double tempK = 1 / (1 / (273.15 + 25) + log(Rt / 10) / 3950.0); 
+    double temp = tempK - 273.15;                                  
+    Serial.printf("ADC value : %d,\tVoltage : %.2fV, \tTemperature : %.2fC\n", adcValue, voltage, temp);
+    server.handleClient();
 }
