@@ -1,0 +1,68 @@
+type: picture-elements
+image: /local/plan.svg
+elements:
+
+  # --- Salon ---
+  - type: state-icon
+    entity: switch.REMPLACE_PAR_TON_SHELLY   # <-- ton Shelly
+    icon: mdi:ceiling-light
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    style:
+      top: 30%
+      left: 29%
+      "--mdc-icon-size": 48px
+
+  # --- Cuisine (exemple, supprime si tu n'as pas de Shelly ici) ---
+  - type: state-icon
+    entity: switch.shelly_cuisine
+    icon: mdi:ceiling-light
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    style:
+      top: 24%
+      left: 75%
+      "--mdc-icon-size": 48px
+
+  # --- Entrée ---
+  - type: state-icon
+    entity: switch.shelly_entree
+    icon: mdi:ceiling-light
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    style:
+      top: 53%
+      left: 75%
+      "--mdc-icon-size": 48px
+
+  # --- Chambre ---
+  - type: state-icon
+    entity: switch.shelly_chambre
+    icon: mdi:ceiling-light
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    style:
+      top: 74%
+      left: 29%
+      "--mdc-icon-size": 48px
+
+  # --- Salle de bain ---
+  - type: state-icon
+    entity: switch.shelly_sdb
+    icon: mdi:ceiling-light
+    tap_action:
+      action: toggle
+    hold_action:
+      action: more-info
+    style:
+      top: 79%
+      left: 75%
+      "--mdc-icon-size": 48px
