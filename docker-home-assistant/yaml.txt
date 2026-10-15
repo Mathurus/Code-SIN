@@ -1,0 +1,21 @@
+title: Appartement
+panel: true
+cards:
+  - type: picture-elements
+    entity: switch.TON_SHELLY
+    image: /local/salon_off.png
+    state_image:
+      "on": /local/salon_on.png
+      "off": /local/salon_off.png
+    elements:
+      - type: state-icon
+        entity: switch.TON_SHELLY
+        icon: mdi:ceiling-light
+        tap_action:
+          action: toggle
+        hold_action:
+          action: more-info
+        style:
+          left: 50%
+          top: 40%
+          "--mdc-icon-size": 44px
